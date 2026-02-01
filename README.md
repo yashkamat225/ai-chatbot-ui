@@ -1,1 +1,74 @@
-# ai-chatbot-ui
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Chatbot</title>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding-top: 40px;
+    }
+    .container {
+      width: 360px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #chat {
+      height: 360px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .user { color: blue; margin: 6px 0; }
+    .bot { color: green; margin: 6px 0; }
+    input {
+      width: 75%;
+      padding: 6px;
+    }
+    button {
+      padding: 6px 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h3>AI Chatbot</h3>
+  <div id="chat"></div>
+  <input id="msg" placeholder="Type your message..." />
+  <button onclick="send()">Send</button>
+</div>
+
+<script>
+const API_URL = "https://ungaping-cindy-necktieless.ngrok-free.dev/webhook/chatbot";
+
+async function send() {
+  const input = document.getElementById("msg");
+  const message = input.value.trim();
+  if (!message) return;
+
+  input.value = "";
+
+  const chat = document.getElementById("chat");
+  chat.innerHTML += `<div class="user">You: ${message}</div>`;
+
+  try {
+    const res = await fetch(`${API_URL}?message=${encodeURIComponent(message)}`);
+    const data = await res.json();
+    chat.innerHTML += `<div class="bot">Bot: ${data.reply}</div>`;
+  } catch (err) {
+    chat.innerHTML += `<div class="bot">❌ Error connecting to server</div>`;
+  }
+
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
